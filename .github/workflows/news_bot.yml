@@ -2,8 +2,8 @@ name: 뉴스봇
 
 on:
   schedule:
-    - cron: '0 21 * * *'   # KST 06:00
-    - cron: '0 7 * * *'    # KST 16:00
+    - cron: "0 21 * * *" # KST 06:00
+    - cron: "0 7 * * *" # KST 16:00
   workflow_dispatch:
 
 jobs:
@@ -11,13 +11,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Python 설치
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - name: 패키지 설치
+          python-version: "3.11"
+
+      - name: Node.js 설치
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Python 패키지 설치
         run: pip install -r requirements.txt
-      - name: 뉴스봇 실행
+
+      - name: Puppeteer 설치
+        run: |
+          npm install puppeteer
+          npx puppeteer browsers install chrome
+
+      - name: 뉴스 수집 및 요약
         run: python news_bot.py
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: HTML 카드 생성
+        run: python make_card.py
+
+      - name: 이미지 변환
+        run: node screenshot.js
+
+      - name: 결과 이미지 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: news-card
+          path: news_card.png
