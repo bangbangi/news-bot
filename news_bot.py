@@ -29,10 +29,10 @@ def fetch_news():
     return articles
 
 def summarize(articles):
-        client = genai.Client(
-                    api_key=os.environ["GEMINI_API_KEY"],
-                    http_options={"api_version": "v1alpha"}
-        )
+    client = genai.Client(
+        api_key=os.environ["GEMINI_API_KEY"],
+        http_options={"api_version": "v1alpha"}
+    )
     text = "\n".join([f"[{a['source']}] {a['title']}" for a in articles])
 
     prompt = f"""다음은 한국 및 해외 주요 언론사의 뉴스입니다. 해외 기사는 한국어로 번역해서 요약해줘.
@@ -44,17 +44,17 @@ def summarize(articles):
 📰 오늘의 주요 뉴스 (날짜)
 
 🇰🇷 국내
-- 기사 제목 요약 (출처)
+- 기사 제목 요약 (출캘)
   핵심 내용 1~2줄
 
 🌏 해외
-- 기사 제목 요약 (출처)
+- 기사 제목 요약 (출캘)
   핵심 내용 1~2줄 (한국어 번역)
 
 #해시태그 5개
 """
     response = client.models.generate_content(
-                model="gemini-2.5-flash",
+        model="gemini-2.5-flash",
         contents=prompt
     )
     return response.text
