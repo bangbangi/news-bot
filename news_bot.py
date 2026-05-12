@@ -32,7 +32,7 @@ def summarize(articles):
 - 마지막에 해시태그 5개
 """
     response = client.models.generate_content(
-                model="gemini-2.0-flash",
+                        model="gemini-2.5-flash",
         contents=prompt
     )
     return response.text
