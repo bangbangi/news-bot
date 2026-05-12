@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "card": "node screenshot.js",
+    "publish": "python3 publish_news.py"
+  },
+  "dependencies": {
+    "puppeteer": "^24.8.2"
+  }
+}
