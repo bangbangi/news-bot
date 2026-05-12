@@ -1,5 +1,5 @@
 import feedparser
-import anthropic
+import google.generativeai as genai
 import os
 
 def fetch_news():
@@ -19,15 +19,12 @@ def fetch_news():
     return articles
 
 def summarize(articles):
-    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    
     text = "\n".join([f"- {a['title']}" for a in articles])
     
-    msg = client.messages.create(
-        model="claude-opus-4-5",
-        max_tokens=800,
-        messages=[{
-            "role": "user",
-            "content": f"""다음 뉴스 기사들을 Threads 게시용으로 요약해줘.
+    prompt = f"""다음 뉴스 기사들을 Threads 게시용으로 요약해줘.
 
 {text}
 
@@ -37,16 +34,15 @@ def summarize(articles):
 - 핵심 기사 5개를 2줄씩 요약
 - 마지막에 해시태그 5개
 """
-        }]
-    )
-    return msg.content[0].text
+    response = model.generate_content(prompt)
+    return response.text
 
 if __name__ == "__main__":
     print("뉴스 수집 중...")
     articles = fetch_news()
     print(f"기사 {len(articles)}개 수집 완료")
     
-    print("Claude 요약 중...")
+    print("Gemini 요약 중...")
     result = summarize(articles)
     print("\n=== 결과 ===")
     print(result)
