@@ -3,9 +3,24 @@ import os
 import time
 
 
+def get_user_id(access_token):
+    """액세스 토큰으로 Threads User ID 자동 조회"""
+    resp = requests.get(
+        "https://graph.threads.net/v1.0/me",
+        params={"fields": "id,username", "access_token": access_token}
+    )
+    data = resp.json()
+    if "id" not in data:
+        raise Exception(f"User ID 조회 실패: {data}")
+    print(f"Threads 계정: @{data.get('username')} (id: {data['id']})")
+    return data["id"]
+
+
 def post_to_threads(text, image_path=None):
     access_token = os.environ["THREADS_ACCESS_TOKEN"]
-    user_id = os.environ["THREADS_USER_ID"]
+
+    # User ID 자동 조회
+    user_id = get_user_id(access_token)
 
     base_url = "https://graph.threads.net/v1.0"
 
