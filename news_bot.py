@@ -51,7 +51,7 @@ def summarize(articles):
 #해시태그 5개
 """
     response = client.models.generate_content(
-        model="gemini-2.5-flash-preview-05-20",
+        model="gemini-1.5-flash",
         contents=prompt
     )
     return response.text
