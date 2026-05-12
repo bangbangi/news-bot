@@ -24,6 +24,12 @@ def post_to_threads(text, image_path=None):
 
     base_url = "https://graph.threads.net/v1.0"
 
+    # Threads API 최대 500자 제한
+    MAX_LEN = 500
+    if len(text) > MAX_LEN:
+        text = text[:MAX_LEN - 1] + "…"
+    print(f"포스팅 텍스트 길이: {len(text)}자")
+
     # 1단계: 미디어 컨테이너 생성
     create_url = f"{base_url}/{user_id}/threads"
 
